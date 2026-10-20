@@ -1,4 +1,16 @@
 services:
+  remote-ubuntu:
+    build:
+      context: ./remote-ubuntu
+    container_name: remote-ubuntu
+    ports:
+      - "2222:22"
+      - "9100:9100"
+    networks:
+      - observability-net
+    volumes:
+      - remote-ubuntu-bin:/usr/local/bin
+
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus-course
@@ -6,9 +18,13 @@ services:
       - "9090:9090"
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/alert.rules.yml:/etc/prometheus/alert.rules.yml
     networks:
       - observability-net
 
 networks:
   observability-net:
     driver: bridge
+
+volumes:
+  remote-ubuntu-bin:
